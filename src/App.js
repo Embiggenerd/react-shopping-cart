@@ -16,9 +16,24 @@ function App() {
 		setCart([...cart, item])
 	};
 
+	const removeItem = itemID => {
+		const cartCopy = [...cart] // Splice mutates original array, so we make a copy 
+		let index;
+		for(let i = 0; i < cartCopy.length; i++) { // Loop through cart, return index of item 
+			if(cartCopy[i].id === itemID) {		   // with id matching itemID
+				index = i						   // assign index 
+			}
+		}
+
+		if(index) {
+			cartCopy.splice(index, 1) // Splice returns copied array minus item
+			setCart(cartCopy)
+		}
+	}
+
 	return (
 		<ProductContext.Provider value={{ products, addItem }}>
-			<CartContext.Provider value={{ cart }} >
+			<CartContext.Provider value={{ cart, removeItem }} >
 				<div className="App">
 					<Navigation />
 
@@ -27,17 +42,11 @@ function App() {
 						exact
 						path="/"
 						component={Products}
-					// render={() => (
-					// 	<Products
-					// 		products={products}
-					// 		addItem={addItem}
-					// 	/>
-					// )}
 					/>
 
 					<Route
 						path="/cart"
-						render={() => <ShoppingCart cart={cart} />}
+						component={ShoppingCart}
 					/>
 				</div>
 			</CartContext.Provider>
